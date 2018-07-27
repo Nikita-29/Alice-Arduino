@@ -2,11 +2,11 @@
 # Импортирует поддержку UTF-8.
 from __future__ import unicode_literals
 
-# Импортируем модули для работы с JSON и логами.
+
 import json
 import logging
 
-# Импортируем подмодули Flask для запуска веб-сервиса.
+
 from flask import Flask, request
 
 app = Flask(__name__)
@@ -39,14 +39,14 @@ def get_status():
     return res
 
 
-# Хранилище данных о сессиях.
+
 sessionStorage = {}
 
 
-# Задаем параметры приложения Flask.
+
 @app.route("/", methods=['POST'])
 def main():
-    # Функция получает тело запроса и возвращает ответ.
+    
     logging.info('Request: %r', request.json)
 
     response = {
@@ -68,15 +68,14 @@ def main():
     )
 
 
-# Функция для непосредственной обработки диалога.
+
 def handle_dialog(req, res):
     global global_flag_open
 
     user_id = req['session']['user_id']
 
     if req['session']['new']:
-        # Это новый пользователь.
-        # Инициализируем сессию и поприветствуем его.
+        
 
         sessionStorage[user_id] = {
             'suggests': [
@@ -97,6 +96,9 @@ def handle_dialog(req, res):
     if req['request']['original_utterance'].lower() in [
         'режим 1',
         'включить режим 1',
+        'режим один',
+        'включить режим один',
+        'включи режим один',
 
     ]:
         # Пользователь согласился, прощаемся.
@@ -109,6 +111,10 @@ def handle_dialog(req, res):
     elif req['request']['original_utterance'].lower() in [
         'режим 2',
         'включить режим 2',
+        'режим два',
+        'включить режим два',
+        'включи режим два',
+
 
     ]:
         res['response']['text'] = 'Режим 2 включен'
@@ -117,6 +123,10 @@ def handle_dialog(req, res):
     elif req['request']['original_utterance'].lower() in [
         'режим 3',
         'включить режим 3',
+        'режим три',
+        'включить режим три',
+        'включи режим три',
+
 
     ]:
 
@@ -126,6 +136,10 @@ def handle_dialog(req, res):
     elif req['request']['original_utterance'].lower() in [
         'режим 4',
         'включить режим 4',
+        'режим четыре',
+        'включить режим четыре',
+        'включи режим четыре',
+
 
     ]:
 
@@ -135,6 +149,10 @@ def handle_dialog(req, res):
     elif req['request']['original_utterance'].lower() in [
         'режим 5',
         'включить режим 5',
+        'режим пять',
+        'включить режим пять',
+        'включи режим пять',
+
 
     ]:
 
@@ -144,6 +162,10 @@ def handle_dialog(req, res):
     elif req['request']['original_utterance'].lower() in [
         'режим 0',
         'включить режим 0',
+        'режим ноль',
+        'включить режим ноль',
+        'включи режим ноль',
+
 
     ]:
 
@@ -153,34 +175,25 @@ def handle_dialog(req, res):
     else:
         res['response']['text'] = 'Я тебя не поняла'
 
-    # res['response']['text'] = 'Все говорят "%s", а ты купи слона!' % (
-    # req['request']['original_utterance']
-    # )
+    
     res['response']['buttons'] = get_suggests(user_id)
 
 
-# Функция возвращает две подсказки для ответа.
+
 def get_suggests(user_id):
     session = sessionStorage[user_id]
 
-    # Выбираем две первые подсказки из массива.
+    
     suggests = [
         {'title': suggest, 'hide': True}
         for suggest in session['suggests'][:2]
     ]
 
-    # Убираем первую подсказку, чтобы подсказки менялись каждый раз.
+    
     session['suggests'] = session['suggests'][1:]
     sessionStorage[user_id] = session
 
-    # Если осталась только одна подсказка, предлагаем подсказку
-    # со ссылкой на Яндекс.Маркет.
-    #   suggests.append({
-    #       "title": "Ладно",
-    #      "url": "https://market.yandex.ru/search?text=слон",
-    #     "hide": True
-    # })
-
+    
     return suggests
 
 
